@@ -38,7 +38,7 @@ describe('Signing module', function() {
     });
   });
 
-  describe('getPublicKey', function() {
+  describe.only('getPublicKey', function() {
     let privateKey = null;
     let publicKey = null;
 
