@@ -31,10 +31,12 @@ Output: a hash
   set a variable to random bytes
 */
 const createPrivateKey = () => {
+  //generate a private key using 32 bytes and then convert the buffer to hex
   let privKey;
   do {
     privKey = randomBytes(32);
   } while (!secp256k1.privateKeyVerify(privKey));
+
   return Buffer.from(privKey, 'hex').toString('hex');
 };
 
@@ -54,7 +56,7 @@ const createPrivateKey = () => {
  *   not hex strings! You'll have to convert the private key.
  */
 const getPublicKey = privateKey => {
-  // Your code here
+  //convert the private key to a hex and then return the public key as a hex string
   const bPrivKey = Buffer.from(privateKey, 'hex');
   const pubKey = secp256k1.publicKeyCreate(bPrivKey);
   
@@ -76,9 +78,15 @@ const getPublicKey = privateKey => {
  *   not the message itself!
  */
 const sign = (privateKey, message) => {
-  // Your code here
+  const bPrivate = Buffer.from(privateKey, 'hex');
+  const hash = createHash('sha256');
+  hash.update(message);
+  const bMessage = Buffer.from(hash.digest('hex'), 'hex');
+  const sigObj = secp256k1.sign(bMessage, bPrivate);
 
+  return sigObj['signature'].toString('hex');
 };
+
 
 /**
  * A function which takes a hex public key, a string message, and a hex
