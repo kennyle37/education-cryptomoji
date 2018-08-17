@@ -31,7 +31,6 @@ Output: a hash
   set a variable to random bytes
 */
 const createPrivateKey = () => {
-  //generate a private key using 32 bytes and then convert the buffer to hex
   let privKey;
   do {
     privKey = randomBytes(32);
@@ -56,11 +55,17 @@ const createPrivateKey = () => {
  *   not hex strings! You'll have to convert the private key.
  */
 const getPublicKey = privateKey => {
-  //convert the private key to a hex and then return the public key as a hex string
-  const bPrivKey = Buffer.from(privateKey, 'hex');
-  const pubKey = secp256k1.publicKeyCreate(bPrivKey);
-  
-  return pubKey.toString('hex');
+/*
+  create a buffer of the private key
+  create a public key of the buffered private key
+
+  return the buffer of the public key
+*/
+
+  const pKey = Buffer.from(privateKey, 'hex');
+  const pubKey = secp256k1.publicKeyCreate(pKey);
+
+  return Buffer.from(pubKey, 'hex').toString('hex');
 };
 
 
@@ -78,13 +83,22 @@ const getPublicKey = privateKey => {
  *   not the message itself!
  */
 const sign = (privateKey, message) => {
-  const bPrivate = Buffer.from(privateKey, 'hex');
-  const hash = createHash('sha256');
-  hash.update(message);
-  const bMessage = Buffer.from(hash.digest('hex'), 'hex');
-  const sigObj = secp256k1.sign(bMessage, bPrivate);
+  /*
+  convert the private key into a hex
+  create a hash
+    update the hash with the private message
+  create a sign with the hex priv key and hash digest
 
-  return sigObj['signature'].toString('hex');
+  return a hex of the sign
+  */
+
+  const pKey = Buffer.from(privateKey, 'hex');
+  let hash = createHash('sha256');
+  hash.update(message);
+  const pMessage = hash.digest();
+  let pSign = secp256k1.sign(pMessage, pKey);
+
+  return Buffer.from(pSign.signature, 'hex').toString('hex');
 };
 
 
@@ -100,13 +114,15 @@ const sign = (privateKey, message) => {
  */
 const verify = (publicKey, message, signature) => {
   const pKey = Buffer.from(publicKey, 'hex');
-  const hash = createHash('sha256');
+  let hash = createHash('sha256');
   hash.update(message);
-  const pMessage = Buffer.from(hash.digest('hex'), 'hex');
+  const pMessage = hash.digest();
   const pSig = Buffer.from(signature, 'hex');
-  const verObj = secp256k1.verify(pMessage, pSig, pKey);
+  const pVerify = secp256k1.verify(pMessage, pSig, pKey);
 
-  return verObj;
+  return pVerify;
+
+
 };
 
 module.exports = {
