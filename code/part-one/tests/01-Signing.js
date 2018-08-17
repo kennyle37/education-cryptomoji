@@ -65,7 +65,7 @@ describe('Signing module', function() {
     });
   });
 
-  describe.only('sign', function() {
+  describe('sign', function() {
     const message = randomString();
     let publicKey = null;
     let signature = null;
@@ -91,7 +91,7 @@ describe('Signing module', function() {
     });
   });
 
-  describe('verify', function() {
+  describe.only('verify', function() {
     const message = randomString();
     let publicKey = null;
     let signature = null;

@@ -99,8 +99,14 @@ const sign = (privateKey, message) => {
  *   // false
  */
 const verify = (publicKey, message, signature) => {
-  // Your code here
+  const pKey = Buffer.from(publicKey, 'hex');
+  const hash = createHash('sha256');
+  hash.update(message);
+  const pMessage = Buffer.from(hash.digest('hex'), 'hex');
+  const pSig = Buffer.from(signature, 'hex');
+  const verObj = secp256k1.verify(pMessage, pSig, pKey);
 
+  return verObj;
 };
 
 module.exports = {
