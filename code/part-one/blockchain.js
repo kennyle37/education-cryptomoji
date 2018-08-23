@@ -23,7 +23,14 @@ class Transaction {
    */
   constructor(privateKey, recipient, amount) {
     // Enter your solution here
+    
+    //get a private key from the public key
+    this.source = signing.getPublicKey(privateKey);
+    this.recipient = recipient;
+    this.amount = amount;
+    let combination = this.source + this.recipient + this.amount;
 
+    this.signature = signing.sign(privateKey, combination);
   }
 }
 
@@ -45,7 +52,12 @@ class Block {
    */
   constructor(transactions, previousHash) {
     // Your code here
+    
+    this.transactions = transactions;
+    this.previousHash = previousHash;
+    this.nonce = 6;
 
+    this.hash = this.calculateHash(this.nonce);
   }
 
   /**
@@ -59,7 +71,10 @@ class Block {
    */
   calculateHash(nonce) {
     // Your code here
-
+    const hash = createHash('sha512');
+    hash.update(this.transactions + this.previousHash + nonce);
+    this.nonce = 0;
+    this.hash = hash.digest().toString();
   }
 }
 

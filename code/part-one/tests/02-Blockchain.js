@@ -38,7 +38,7 @@ describe('Blockchain module', function() {
     });
   });
 
-  describe('Block', function() {
+  describe.only('Block', function() {
     let previousHash = null;
     let transactions = null;
     let block = null;
